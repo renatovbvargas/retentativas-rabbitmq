@@ -1,0 +1,19 @@
+{
+  "name": "retentativas-rabbitmq",
+  "version": "1.0.0",
+  "description": "1. Subir o docker-compose 2. Criar o exchange WHATSAPP 3. Criar a fila WHATSAPP_RECEIVE_MESSAGE 4. Bind da WHATSAPP_RECEIVE_MESSAGE para o exchange WHATSAPP topico WHATSAPP_RECEIVE_MESSAGE 5. Enviar mensagem pro exchange WHATSAPP 6. Criar fila WHATSAPP_RECEIVE_MESSAGE_TTL_5000  7. Enviar mensagem pra fila WHATSAPP_RECEIVE_MESSAGE_TTL_5000",
+  "main": "producer.js",
+  "scripts": {
+    "config": "node src/rabbitmq/config",
+    "producer": "npm run config && node src/producer",
+    "consumer": "npm run config && node src/consumer",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.8.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3"
+  }
+}

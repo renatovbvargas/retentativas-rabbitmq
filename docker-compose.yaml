@@ -1,0 +1,51 @@
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.9-management
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  producer:
+    container_name: producer
+    build: 
+      context: ./
+      dockerfile: ./build/producer.dockerfile
+    depends_on: 
+      - "rabbitmq"
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - AMQP_URL=amqp://rabbitmq
+      - EXCHANGE=WHATSAPP
+      - QUEUE=WHATSAPP_RECEIVE_MESSAGE
+      - QUEUE_OK=WHATSAPP_RECEIVE_MESSAGE_OK
+      - QUEUE_DLX=WHATSAPP_RECEIVE_MESSAGE_DLX
+      - QUEUE_ERROR=WHATSAPP_RECEIVE_MESSAGE_ERROR
+      - MAX_ATTEMPTS=4
+      - MESSAGE_TTL=5000
+
+  consumer:
+    container_name: consumer
+    build: 
+      context: ./
+      dockerfile: ./build/consumer.dockerfile
+    depends_on: 
+      - "rabbitmq"
+    restart: always
+    environment:
+      - AMQP_URL=amqp://rabbitmq
+      - EXCHANGE=WHATSAPP
+      - QUEUE=WHATSAPP_RECEIVE_MESSAGE
+      - QUEUE_OK=WHATSAPP_RECEIVE_MESSAGE_OK
+      - QUEUE_DLX=WHATSAPP_RECEIVE_MESSAGE_DLX
+      - QUEUE_ERROR=WHATSAPP_RECEIVE_MESSAGE_ERROR
+      - MAX_ATTEMPTS=4
+      - MESSAGE_TTL=5000
+
+networks:
+  default:
+    external:
+      name: renato-net
